@@ -1,0 +1,53 @@
+/* To prevent this building block's CSS from having unintentional effects, put
+ * it all under the wrapping ng-app div's class. One reason for using SASS is
+ * the easy way that we can specify nested rules. In this example, every rule
+ * is nested under the TemplateApp class without having to respecify the
+ * TemplateApp selector for every rule. */
+.VideoScribeRegistrationAdmin {
+  /* SASS lets you declare variables, these are scoped to .TemplateApp */
+  /* The mode selection blocks */
+  /* The status indicators for the form submit */ }
+  .VideoScribeRegistrationAdmin form {
+    font-size: 1.1em; }
+  .VideoScribeRegistrationAdmin .modeBlock {
+    margin-top: 1em;
+    display: inline-block;
+    width: 20em; }
+    .VideoScribeRegistrationAdmin .modeBlock label {
+      padding: 0.5em 0.5em 0.7em 0; }
+      .VideoScribeRegistrationAdmin .modeBlock label.modeSelectLabel {
+        display: block;
+        text-align: center; }
+        .VideoScribeRegistrationAdmin .modeBlock label.modeSelectLabel input {
+          margin: 0;
+          margin-right: 0.2em; }
+      .VideoScribeRegistrationAdmin .modeBlock label.alignedLabel {
+        padding: 0.5em 0.5em 0.7em 0;
+        text-align: right;
+        display: inline-block;
+        width: 5em; }
+      .VideoScribeRegistrationAdmin .modeBlock label.smallText {
+        padding: 0;
+        font-size: 0.9em; }
+    .VideoScribeRegistrationAdmin .modeBlock input {
+      padding: 0.2em; }
+  .VideoScribeRegistrationAdmin .centerSubmit {
+    width: 40em;
+    margin-top: 1em; }
+    .VideoScribeRegistrationAdmin .centerSubmit input {
+      margin: 0 auto;
+      display: block;
+      padding: 0.3em 0.6em; }
+  .VideoScribeRegistrationAdmin span {
+    padding: 0.5em;
+    color: white;
+    /* & is replaced with the parent, in this case, it compiles to
+     * "span.working". Without the &, it compiles to "span .working", the
+     * only difference is the space between span and .working which gives
+     * them different CSS meanings. */ }
+    .VideoScribeRegistrationAdmin span.processing {
+      background-color: royalblue; }
+    .VideoScribeRegistrationAdmin span.success {
+      background-color: green; }
+    .VideoScribeRegistrationAdmin span.error {
+      background-color: firebrick; }

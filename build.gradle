@@ -1,0 +1,82 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+
+repositories {
+	mavenCentral()
+	maven {
+		// Blackboard Maven Repo
+		url "https://maven.blackboard.com/content/repositories/releases"
+	}
+	maven {
+		// CTLT Maven repo for external libs that don't have their own repo
+		url "http://artifactory.ctlt.ubc.ca/artifactory/ctlt-release-local/"
+	}
+}
+
+ext {
+	bblVer = "9.1.120113.0" // we're on sp13, but BB maven stuck on sp12
+	bblServer = "bblvm" // CHANGEME: the BBL server to deploy to
+}
+
+configurations {
+	b2deploy // need path to b2deploy jar path, so assign it a config artifact
+}
+
+// Install Java side dependencies
+dependencies {
+	// providedCompile are dependencies that don't need to go into the war file
+	// regular compile is for dependencies that needs to go into the war file
+
+	// Blackboard provided libraries
+	providedCompile "blackboard.platform:bb-platform:$bblVer" // main B2 APIs
+	providedCompile "blackboard.platform:bb-taglibs:$bblVer" // bbNG tags
+	providedCompile "blackboard.platform:bb-bbxythos:$bblVer" // content system
+	b2deploy "org.oscelot:b2deploy-task:0.1.0" // automatic b2 install jar
+
+	// Java servlet api, we're stuck with 2.5 cause BBL uses tomcat 6
+    providedCompile 'javax.servlet:servlet-api:2.5' 
+
+	// Logback, logging framework, with native slf4j api
+	compile 'ch.qos.logback:logback-classic:1.0.13'
+	// Jersey, rest framework, jax-rs reference implementation
+	compile 'org.glassfish.jersey.containers:jersey-container-servlet-core:2.13'
+	// Gson, convert Java objects into JSON strings and vice versa
+	compile 'com.google.code.gson:gson:2.2.4'
+	// B2Context, for storing b2 configuration
+	compile 'com.spvsoftwareproducts:b2context:1.4.02'
+}
+
+// Gradle wrapper support
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1'
+}
+
+// Compile the Sass css file into regular css 
+task compileCSS(type:Exec) {
+	println 'Compiling css'	
+	commandLine = ['sass', '--update', 'webapp/styles:webapp/styles']
+}
+
+// Make sure that front end packages are installed by Bower
+task bowerInstall(type:Exec) {
+	println 'Bower install'
+	commandLine = ['bower', 'install']
+}
+
+// Include the webapp directory into the building block war file. This is to
+// avoid the default src/main/webapp/ directory structure. I prefer webapp/ for
+// easier access.
+war {
+	from "webapp"
+}
+war.dependsOn bowerInstall // ensure front-end libs included in the war file
+war.dependsOn compileCSS // ensure actual CSS generated for the war file
+
+// Automatically install the building block on the dev server
+task deploy( dependsOn: "war" ) << {
+	println "Uploading to Blackboard Learn server"
+	ant.taskdef( name: "b2deploy", classname: "org.oscelot.ant.B2DeployTask", classpath: project.configurations.b2deploy.asPath )
+	ant.b2deploy(localfilepath: project.war.archivePath, host: bblServer, courseorgavailable: 'true', clean: 'true')
+}
+

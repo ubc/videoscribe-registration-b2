@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+	<!-- core extension information -->
+	<plugin>
+		<!-- This'll be the name displayed in the Building Blocks list -->
+		<name value="VideoScribe Registration Building Block" /> <!-- CHANGEME -->
+		<!-- If this changes, then it's treated as a new building block. I think 
+			it's combined with vendor ID to form the building block's ID. -->
+		<handle value="videoscribe-registration" />
+		<description
+			value="Initiates VideoScribe registration by calling their API." />
+		<version value="1.0.0" />
+		<requires>
+			<!-- Same Format as BBL versions: major.minor.patch.build, only first 
+				two numbers required. -->
+			<bbversion value="9.1" />
+		</requires>
+		<vendor>
+			<id value="ubc" />
+			<name value="University of British Columbia" />
+			<url value="http://www.ubc.ca" />
+			<description value="" />
+		</vendor>
+
+		<!-- Each building block has a set of dropdown menu items in System Admin > 
+			Building Blocks > Installed Tools. This section configures where those 
+			links go. -->
+		<http-actions>
+			<!-- Configures where the "Settings" link goes. -->
+			<config value="jsps/admin/index.jsp" />
+			<!-- Configures a pre-removal page for performing special uninstall actions. -->
+			<!-- <remove value="admin/remove.jsp"/> -->
+		</http-actions>
+
+		<!-- Defines how other parts of BBL can create links to this building block.
+		Note that while you can define multiple applications, there doesn't seem to be
+		any need, as with type='shared', you can define both course and system links
+		in the same <application> block. -->
+		<application-defs>
+			<application handle="videoscribe-registration" type="shared" use-ssl="false"
+				name="VideoScribe Registration" can-allow-guest="false">
+				<description lang="en_US"></description>
+				<links>
+					<!-- Configure a link to this building block for System Admin > Tools and
+					Utilities. In this case, the link goes to the same configuration page as
+					Settings configured in <http-actions>. -->
+					<link>
+						<type value="system_tool"></type>
+						<name value="VideoScribe Registration Configuration"></name>
+						<!-- The URL is relative to the building block and is where the user will
+						be taken when clicking on this link. -->
+						<url value="jsps/admin/index.jsp" /> <!-- This is the jsp at webapp/admin/indjex.jsp -->
+					</link>
+					<!-- Allow instructors to create links to this building block in their courses. -->
+					<!--
+					<link>
+						<type value="course_tool"></type>
+						<name value="VideoScribe Registration course tool"></name>
+						<url value="course/index.jsp" />
+					</link>
+					-->
+				</links>
+			</application>
+		</application-defs>
+
+		<!-- Portal Module Definitions -->
+		<module-defs>
+			<!-- 
+			Example of a module that people can add, e.g.: to their home pages or to custom system tabs.
+			Note that due to a javascript loader system in effect for modules, if you intend to use 
+			AngularJS, you will need to manually bootstrap Angular (ng-app won't work, so you tell 
+			Angular to bootstrap on the element that ng-app is on).
+			
+			The <edit> and <admin> sections in <jsp> are optional. Both jsp should use <bbNG:modulePage>
+			tags.
+			<edit> is for individually user customizable properties
+			<admin> is for system admin accessible only global properties
+			 -->
+			<module-type ext-ref="ubc-videoscribe-registration" title="VideoScribe Registration" uicreatable="true">
+				<jsp-dir>jsps/module</jsp-dir>
+				<jsp>
+					<view>index.jsp</view>
+					<!-- <edit>edit.jsp</edit>
+					<admin>admin.jsp</admin> -->
+				</jsp>
+			</module-type>
+			<module type="ubc-videoscribe-registration" isadmin="true" useraddable="true"
+				isdeletable="true" title="VideoScribe Registration">
+				<description>VideoScribe Registration</description>
+				<module-groups>
+					<module-group id="Everyone" />
+				</module-groups>
+				<ExtraInfo>
+					<property key="body.text" type="String">
+						VideoScribe Registration Module
+					</property>
+				</ExtraInfo>
+			</module>
+		</module-defs>
+
+		<!-- Custom Content Types -->
+		<content-handlers>
+			<!-- Never used these before, no idea what they do. -->
+		</content-handlers>
+
+		<!-- Code permissions required for proper operation -->
+		<permissions>
+			<permission type="attribute" name="user.authinfo" actions="get" />
+			<permission type="attribute" name="user.personalinfo" 
+					actions="get,set" />
+			<!-- Required by Jersey -->
+			<permission type="java.lang.reflect.ReflectPermission"
+					name="suppressAccessChecks" />
+			<permission type="java.lang.RuntimePermission" name="modifyThread"/>
+			<!-- Required to send request to videoscribe's dev API server-->
+			<permission type="java.net.SocketPermission" 
+					name="my2.sparkol-dev.co.uk:80" actions="connect,resolve" />
+			<!-- Required to send request to videoscribe's prod API server-->
+			<permission type="java.net.SocketPermission" 
+					name="my.sparkol.com" actions="connect,resolve" />
+		</permissions>
+
+	</plugin>
+
+</manifest>

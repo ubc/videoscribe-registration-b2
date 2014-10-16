@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+
+	<!-- Configure Jersey to serve REST calls -->
+	<filter>
+		<filter-name>ubc-videoscribe-registration</filter-name>
+		<filter-class>org.glassfish.jersey.servlet.ServletContainer</filter-class>
+		<!-- Jersey can scan packages for resources and register them automatically, we specify the packages to be scanned here -->
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>ca.ubc.ctlt.videoscriberegistration</param-value>
+		</init-param>
+		<!-- Jersey passthrough for serving static files. -->
+		<init-param>
+			<param-name>jersey.config.servlet.filter.staticContentRegex</param-name>
+			<!-- Paths that start with e.g.: /scripts or /bower_components get served as static content -->
+			<param-value>/(scripts|styles|bower_components|jsps)/.*</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>ubc-videoscribe-registration</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+</web-app>
