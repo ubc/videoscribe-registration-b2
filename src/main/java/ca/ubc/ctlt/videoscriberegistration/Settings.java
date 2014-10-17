@@ -1,0 +1,133 @@
+package ca.ubc.ctlt.videoscriberegistration;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import blackboard.platform.context.Context;
+import blackboard.platform.context.ContextManagerFactory;
+
+import com.google.gson.Gson;
+import com.spvsoftwareproducts.blackboard.utils.B2Context;
+
+public class Settings
+{
+	public final static String MODE_SETTING = "mode_setting";
+	public final static String PROD_USERNAME_SETTING = "prod_username_setting";
+	public final static String PROD_PASSWORD_SETTING = "prod_password_setting";
+	public final static String DEV_USERNAME_SETTING = "dev_username_setting";
+	public final static String DEV_PASSWORD_SETTING = "dev_password_setting";
+	
+	public final static String PROD_MODE = "prod";
+	public final static String DEV_MODE = "dev";
+	
+	private B2Context settings;
+	
+	/**
+	 * Local class for converting settings to JSON and back 
+	 */
+	class Config
+	{
+		public String mode = "";
+		public Map<String, String> prod = new HashMap<String, String>();
+		public Map<String, String> dev = new HashMap<String, String>();
+	}
+
+	public Settings()
+	{
+		Context ctx = ContextManagerFactory.getInstance().getContext();
+		settings = new B2Context(ctx.getRequest());
+	}
+	
+	/**
+	 * There are dev and prod API servers, need to switch between them as configured.
+	 * @return The base url that we add the API path to.
+	 */
+	public String getApiBaseUrl()
+	{
+		if (isProdMode()) return "https://my.sparkol.com";
+		return "http://my2.sparkol-dev.co.uk";
+	}
+	/**
+	 * Get the username appropriate for the mode selected.
+	 * @return
+	 */
+	public String getUsername()
+	{
+		if (isProdMode()) return getProdUsername();
+		return getDevUsername();
+	}
+	/**
+	 * Get the password appropriate for the mode selected
+	 * @return
+	 */
+	public String getPassword()
+	{
+		if (isProdMode()) return getProdPassword();
+		return getDevPassword();
+	}
+	/**
+	 * Converts the settings to JSON representation.
+	 * @return
+	 */
+	public String toJson()
+	{
+		Config config = new Config();
+		config.mode = getMode();
+		config.prod.put("username", getProdUsername());
+		config.prod.put("password", getProdPassword());
+		config.dev.put("username", getDevUsername());
+		config.dev.put("password", getDevPassword());
+		
+		Gson gson = new Gson();
+		return gson.toJson(config);
+	}
+	
+	public void updateFromJson(String json) throws InvalidOption
+	{
+		Gson gson = new Gson();
+		Config config = gson.fromJson(json, Config.class);
+
+		if (!config.mode.equals(PROD_MODE) && !config.mode.equals(DEV_MODE)) 
+		{
+			throw new InvalidOption("Operating mode selected is invalid!");
+		}
+		settings.setSetting(MODE_SETTING, config.mode);
+		settings.setSetting(PROD_USERNAME_SETTING, config.prod.get("username"));
+		settings.setSetting(PROD_PASSWORD_SETTING, config.prod.get("password"));
+		settings.setSetting(DEV_USERNAME_SETTING, config.dev.get("username"));
+		settings.setSetting(DEV_PASSWORD_SETTING, config.dev.get("password"));
+		settings.persistSettings();
+	}
+	
+	/**
+	 * @return True if we're in production mode, false otherwise. If no values stored, defaults to dev mode.
+	 */
+	private boolean isProdMode()
+	{
+		if (getMode().equals(PROD_MODE)) return true;
+		return false;
+	}
+	// boilerplate for getting each setting
+	private String getMode()
+	{
+		return settings.getSetting(MODE_SETTING, DEV_MODE);
+	}
+	private String getProdUsername()
+	{
+		return settings.getSetting(PROD_USERNAME_SETTING, "");
+	}
+	private String getProdPassword()
+	{
+		return settings.getSetting(PROD_PASSWORD_SETTING, "");
+	}
+	private String getDevUsername()
+	{
+		return settings.getSetting(DEV_USERNAME_SETTING, "");
+	}
+	private String getDevPassword()
+	{
+		return settings.getSetting(DEV_PASSWORD_SETTING, "");
+	}
+
+
+}

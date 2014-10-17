@@ -38,16 +38,20 @@
       margin: 0 auto;
       display: block;
       padding: 0.3em 0.6em; }
-  .VideoScribeRegistrationAdmin span {
-    padding: 0.5em;
-    color: white;
-    /* & is replaced with the parent, in this case, it compiles to
-     * "span.working". Without the &, it compiles to "span .working", the
-     * only difference is the space between span and .working which gives
-     * them different CSS meanings. */ }
-    .VideoScribeRegistrationAdmin span.processing {
-      background-color: royalblue; }
-    .VideoScribeRegistrationAdmin span.success {
-      background-color: green; }
-    .VideoScribeRegistrationAdmin span.error {
-      background-color: firebrick; }
+  .VideoScribeRegistrationAdmin .messages {
+    margin-top: 1em;
+    width: 40em;
+    text-align: center; }
+    .VideoScribeRegistrationAdmin .messages span {
+      padding: 0.5em;
+      color: white;
+      /* & is replaced with the parent, in this case, it compiles to
+       * "span.working". Without the &, it compiles to "span .working", the
+       * only difference is the space between span and .working which gives
+       * them different CSS meanings. */ }
+      .VideoScribeRegistrationAdmin .messages span.processing {
+        background-color: royalblue; }
+      .VideoScribeRegistrationAdmin .messages span.success {
+        background-color: green; }
+      .VideoScribeRegistrationAdmin .messages span.error {
+        background-color: firebrick; }

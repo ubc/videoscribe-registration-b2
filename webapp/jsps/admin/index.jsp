@@ -30,11 +30,12 @@ var b2path = "${ctx.request.contextPath}"; // sort of a hacky way to get the b2'
 <script src="${ctx.request.contextPath}/scripts/admin.js"></script>
 
 <%-- AngularJS needs a wrapping ng-app element. We give it a class too to make it easy to isolate this building block's CSS. --%>
-<div class="VideoScribeRegistrationAdmin" ng-app="templateApp">
-	<h1>Select Operation Mode</h1>
+<div class="VideoScribeRegistrationAdmin" ng-app="VideoScribeRegistrationAdminApp">
 	<%-- Only a simple single controller app that, given a username, retrieves some
 	basic info about the user. Will initially load the current logged in user's info. --%>
 	<div ng-controller="AdminCtrl">
+		<h1>Select Operation Mode</h1>
+
 		<form ng-submit="submit()" onsubmit="return false;">
 			<p>
 			For testing purposes, a <i>Development Mode</i> is available.
@@ -85,6 +86,16 @@ var b2path = "${ctx.request.contextPath}"; // sort of a hacky way to get the b2'
 			<div class="centerSubmit">
 				<input type="submit" value="Save" />
 			</div>
+			<div class="messages">
+				<%-- This controls messages that show up while the page is loading --%>
+				<span class="processing" ng-if="duringInit">Initializing...</span>
+				<span class="error" ng-if="initError">Initialization failed. Unable to retrieve stored settings.</span>
+				<%-- Status messages for saving settings. --%>
+				<span class="processing" ng-show='submitMsg == "processing"'>Saving...</span>
+				<span class="success" ng-show="submitMsg == 'success'">Save Successful!</span>
+				<span class="error" ng-show="submitMsg == 'error'">Server returned an error while saving.</span>
+			</div>
+
 		</form>
 	</div>
 </div>

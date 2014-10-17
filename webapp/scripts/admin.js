@@ -1,4 +1,4 @@
-var app = angular.module('templateApp', ['admin']);
+var app = angular.module('VideoScribeRegistrationAdminApp', ['admin']);
 
 // Put all building block admin functions into its own module.
 var adminModule = angular.module('admin', ['ngResource']);
@@ -6,54 +6,43 @@ var adminModule = angular.module('admin', ['ngResource']);
 adminModule.factory('AdminRsc',
 	function ($resource)
 	{
-		return $resource(
-			b2path + '/admin/:username'
-		);
+		return $resource(b2path + '/admin/');
 	}
 );
 
 adminModule.controller('AdminCtrl', 
-	function ($scope, $timeout, AdminRsc)
+	function ($log, $scope, $timeout, AdminRsc)
 	{
 		$scope.duringInit = true;
+		$scope.initError = false;
 		$scope.submitMsg = "";
 		// AdminRsc is how we interact with the server side REST data source, this 
 		// does a GET request to /admin/
-		// This is also using a "on success" callback to set initDone to true.
-		$scope.info = AdminRsc.get({}, function() { $scope.duringInit = false; });
+		$scope.info = AdminRsc.get().$promise.then(
+			function(ret)
+			{ 
+				$scope.config = ret;
+				$timeout(function() { $scope.duringInit = false; }, 500);
+			},
+			function(ret) 
+			{
+				$timeout(function() { $scope.duringInit = false; $scope.initError = true; }, 500);
+			}
+		);
 		// this is the function for the username form submit
 		$scope.submit = function() 
 		{ 
-			// Change the status message to let the user know that stuff is happening.
-			// Users might not see this if we get the results back fast enough.
 			$scope.submitMsg = "processing";
-			// Note that we're using the same AdminRsc as previously but using the more
-			// advanced promise mechanism instead of callbacks to process the result.
-			// We've also supplied a username param which means we do a request to
-			// /admin/username
-			AdminRsc.get({username:this.username}).$promise.then(
-				// if the request was successful
+			AdminRsc.save($scope.config).$promise.then(
 				function(result)
 				{
-					// Show the success status message first, then populate the user info fields.
 					$scope.submitMsg = "success"; 
-					$scope.info = result; 
-					// remove the status message after a delay
+					$scope.config = result;
 					$timeout(function() { $scope.submitMsg = ""; }, 5000);
 				},
-				// if the request returned an error
 				function(error)
 				{
-					var errMsg;
-					if (error.status == 404)
-					{
-						errMsg = "notfound";
-					}
-					else
-					{
-						errMsg = "servererror";
-					}
-					$timeout(function() { $scope.submitMsg = errMsg; }, 500);
+					$timeout(function() { $scope.submitMsg = "error"; }, 500);
 					$timeout(function() { $scope.submitMsg = ""; }, 5000);
 				}
 			);
