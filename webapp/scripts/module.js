@@ -11,18 +11,61 @@ vsregiApp.factory(
 
 vsregiApp.controller(
 	'VSModuleController', 
-	function($scope, $log, ModuleResource)
+	function($scope, $log, $timeout, ModuleResource)
 	{
-		$scope.courses = ModuleResource.get().$promise.then(
-			function(ret) {
-				$log.debug(ret);
-			},
-			function() {
-			}
-		);
-		$scope.submit = function() {
-			$log.debug($scope.info);
-			ModuleResource.save($scope.info);
+		$scope.submitStatus = "";
+		$scope.submit = function() 
+		{
+			$scope.submitStatus = "processing";
+			ModuleResource.save($scope.info).$promise.then(
+				function(result) 
+				{
+					$log.debug("Submit Success");
+					$log.debug(result);
+					$timeout(function() { $scope.submitStatus = "success"; }, 200);
+					$timeout(function() { $scope.submitStatus = ""; }, 5200);
+				},
+				function(result)
+				{
+					$log.debug("Failed Submit");
+					$log.debug(result);
+					$scope.submitStatus = "error";
+					if (result.status >= 500)
+					{
+						$scope.errorMsg = "Registration failed due to a server error.";
+					}
+					else
+					{
+						var errorCode = result.data.desc.error_code;
+						$log.debug(errorCode);
+						if (errorCode == "error_email_exists")
+						{
+							$log.debug("Email Exists");
+							$scope.errorMsg = result.data.desc.error_message;
+						}
+						else if (errorCode == "error_validation")
+						{
+							$log.debug("Error Validation");
+							var problematicField = 
+								result.data.desc.error_validation[0].fieldname;
+							$log.debug(problematicField);
+							if (problematicField == "password")
+							{
+								$scope.errorMsg="Error: Password is too short.";
+							}
+							else if (problematicField == "surname")
+							{
+								$scope.errorMsg = "Error: Missing last name.";
+							}
+							else
+							{
+								$scope.errorMsg = "Error: Missing " + 
+									problematicField;
+							}
+						}
+					}
+				}
+			);
 		};
 	}
 );

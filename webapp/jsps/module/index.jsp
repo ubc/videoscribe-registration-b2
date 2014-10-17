@@ -19,26 +19,39 @@ unavailable or not, then by the user's role in the course '-->
 	
 	<div id="VideoScribeRegistrationAppDiv">
 		<div ng-controller="VSModuleController">
+			<p>
+			Please fill in the form below and then click "Register" to create your VideoScribe account. Note that you don't have to put down your real name, but the email must be valid since you will get additional instructions by email.
+			</p>
 			<form ng-submit="submit()">
 				<div>
 					<label for="ubc-vsr-firstname">Firstname </label>
-					<input id="ubc-vsr-firstname" type="text" ng-model="info.firstname" />
+					<input id="ubc-vsr-firstname" type="text" ng-model="info.firstname" required />
 				</div>
 				<div>
 					<label for="ubc-vsr-lastname">Lastname </label>
-					<input id="ubc-vsr-lastname" type="text" ng-model="info.lastname" />
+					<input id="ubc-vsr-lastname" type="text" ng-model="info.lastname" required />
 				</div>
 				<div>
 					<label for="ubc-vsr-password">Password </label>
-					<input id="ubc-vsr-password" type="text" ng-model="info.password" />
+					<input id="ubc-vsr-password" ng-hide="showPassword" type="password" ng-model="info.password" required />
+					<input id="ubc-vsr-password" ng-show="showPassword" type="text" ng-model="info.password" required />
+					<label class="passwordVisibility">
+							<input type="checkbox" ng-model="showPassword" ng-checked="false">Show
+					</label>
 				</div>
 				<div>
 					<label for="ubc-vsr-email">Email </label>
 					<input id="ubc-vsr-email" type="text" ng-model="info.email" required />
 				</div>
 				<div class="submit">
-					<input id="ubc-vsr-submit" type="submit" value="Submit" />
+					<input id="ubc-vsr-submit" type="submit" value="Register" />
 				</div>
+				<div class="messages">
+					<span class="processing" ng-show='submitStatus == "processing"'>Registering...</span>
+					<span class="success" ng-show="submitStatus == 'success'">Success! Please check your email.</span>
+					<span class="error" ng-show="submitStatus == 'error'">{{errorMsg}}</span>
+				</div>
+
 			</form>
 		</div>
 	</div>
@@ -49,9 +62,17 @@ unavailable or not, then by the user's role in the course '-->
 {
 	margin-bottom: 0.5em;
 }
+#VideoScribeRegistrationAppDiv p
+{
+	margin-bottom: 1em;
+}
+#VideoScribeRegistrationAppDiv form input
+{
+	padding: 0.2em;
+}
 #VideoScribeRegistrationAppDiv form .submit
 {
-	text-align: center;
+	margin-left: 6.7em;
 }
 #VideoScribeRegistrationAppDiv form .submit input
 {
@@ -65,9 +86,35 @@ unavailable or not, then by the user's role in the course '-->
 #VideoScribeRegistrationAppDiv form label
 {
 	display: inline-block;
-	width: 7em;
+	width: 6em;
 	margin-right: 0.5em;
 	text-align: right;
+}
+#VideoScribeRegistrationAppDiv form .passwordVisibility
+{
+	display: inline;
+	font-size: 0.9em;
+}
+#VideoScribeRegistrationAppDiv form div.messages
+{
+	margin-top: 1em;
+}
+#VideoScribeRegistrationAppDiv form .messages span
+{
+	padding: 0.5em;
+	color: white;
+}
+#VideoScribeRegistrationAppDiv form .messages .processing
+{
+	background-color: royalblue;
+}
+#VideoScribeRegistrationAppDiv form .messages .success
+{
+	background-color: green;
+}
+#VideoScribeRegistrationAppDiv form .messages .error
+{
+	background-color: firebrick;
 }
 </style>
 <bbNG:jsBlock>

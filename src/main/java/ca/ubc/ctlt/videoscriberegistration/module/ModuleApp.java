@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,6 +21,10 @@ import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import blackboard.platform.context.Context;
+import blackboard.platform.context.ContextManagerFactory;
+import ca.ubc.ctlt.videoscriberegistration.Settings;
+
 import com.google.gson.Gson;
 
 @Path("module")
@@ -28,23 +33,17 @@ public class ModuleApp extends Application
 {
 	private final static Logger logger = LoggerFactory.getLogger(ModuleApp.class);
 
-	@GET
-	public String loadCourses()
-	{
-		// Map courses according to the user's role
-		HashMap<String, Integer> ret = new HashMap<String, Integer>();
-		ret.put("Test", 1);
-		
-		Gson gson = new Gson();
-		// serialising generic types require specifying the type information since .getClass() doesn't have those
-		//Type type = new TypeToken<HashMap<String, List<CourseJson>>>(){}.getType();
-		return gson.toJson(ret);
-	}
-	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public String registerVideoScribe(String message)
+	public Response registerVideoScribe(String message)
 	{
+		// user must be logged in
+		Context ctx = ContextManagerFactory.getInstance().getContext();
+		if (!ctx.getSession().isAuthenticated())
+		{
+			throw new ForbiddenException();
+		}
+		Settings settings = new Settings();
 		Gson gson = new Gson();
 		// parse params
 		Map<String, String> params = new HashMap<String, String>();
@@ -52,10 +51,12 @@ public class ModuleApp extends Application
 		// create REST client
 		Client client = ClientBuilder.newClient();
 		// basic authentication defaults to pre-emptive mode, meaning that credentials are always sent
-		HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.basic("username", "password");
+		HttpAuthenticationFeature authFeature = HttpAuthenticationFeature.basic(
+				settings.getUsername(), settings.getPassword());
 		// should probably use a ClientConfig for client configuration later
 		client.register(authFeature);
-		WebTarget target = client.target("http://my2.sparkol-dev.co.uk").path("registrations/signup-with-licence");
+		WebTarget target = client.target(settings.getApiBaseUrl()).path("api/registrations/signup-with-licence");
+		logger.debug("VideoScribe API URL: " + target.toString());
 		// prepare parameters for the VideoScribe API
 		Map<String, String> vsApiParams = new HashMap<String, String>();
 		vsApiParams.put("firstname", params.get("firstname"));
@@ -66,10 +67,24 @@ public class ModuleApp extends Application
 		Response resp = target.request(MediaType.APPLICATION_JSON_TYPE).
 				post(Entity.entity(gson.toJson(vsApiParams), MediaType.APPLICATION_JSON));
 		
-		logger.debug("Hello World!!!!");
-		logger.debug(Integer.toString(resp.getStatus()));
-		logger.debug(resp.readEntity(String.class));
-		return "";
+		if (resp.getStatus() >= 200 && resp.getStatus() < 300)
+		{
+			return Response.ok("{\"status\":\"success\"}").build();
+		}
+		else if (resp.getStatus() >= 400 && resp.getStatus() < 500)
+		{
+			String errorJson = resp.readEntity(String.class);
+			logger.error("Videoscribe API returned " + resp.getStatus() + " with message:" + 
+				errorJson);
+			return Response.status(400).entity(
+				"{\"status\":\"error\", \"desc\":"+ errorJson +"}").build();
+		}
+		else
+		{
+			logger.error("Videoscribe API returned " + resp.getStatus() + " with message:" + 
+				resp.readEntity(String.class));
+			throw new InternalServerErrorException();
+		}
 	}
 
 }

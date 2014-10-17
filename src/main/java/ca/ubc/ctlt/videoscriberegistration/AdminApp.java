@@ -2,6 +2,7 @@ package ca.ubc.ctlt.videoscriberegistration;
 
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -11,6 +12,10 @@ import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import blackboard.data.user.User;
+import blackboard.platform.context.Context;
+import blackboard.platform.context.ContextManagerFactory;
 
 // add admin to the path, the complete path would now be /api/admin/<path>
 @Path("admin")
@@ -29,6 +34,8 @@ public class AdminApp extends Application
 	@GET
 	public String getDefaultUserInfo()
 	{
+		ensureAccess();
+
 		// The Blackboard Context object is how you access information about the request that we're serving.
 		// This is the same Context accessible with the bbNG page tags.
 		Settings settings = new Settings();
@@ -43,6 +50,8 @@ public class AdminApp extends Application
 	@POST
 	public String getUserInfoByUsername(String json)
 	{
+		ensureAccess();
+
 		Settings settings = new Settings();
 		try
 		{
@@ -53,5 +62,25 @@ public class AdminApp extends Application
 			throw new BadRequestException("Invalid operation mode selected!");
 		}
 		return settings.toJson();
+	}
+	
+	/**
+	 * Only system admins can access these APIs
+	 */
+	private void ensureAccess()
+	{
+		Context ctx = ContextManagerFactory.getInstance().getContext();
+		if (ctx.getSession().isAuthenticated())
+		{
+			User user = ctx.getUser();
+			if (!user.getSystemRole().equals(User.SystemRole.SYSTEM_ADMIN))
+			{
+				throw new ForbiddenException();
+			}
+		}
+		else
+		{
+			throw new ForbiddenException();
+		}
 	}
 }
