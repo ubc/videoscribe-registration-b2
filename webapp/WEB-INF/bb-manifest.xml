@@ -32,37 +32,6 @@
 			<!-- <remove value="admin/remove.jsp"/> -->
 		</http-actions>
 
-		<!-- Defines how other parts of BBL can create links to this building block.
-		Note that while you can define multiple applications, there doesn't seem to be
-		any need, as with type='shared', you can define both course and system links
-		in the same <application> block. -->
-		<application-defs>
-			<application handle="videoscribe-registration" type="shared" use-ssl="false"
-				name="VideoScribe Registration" can-allow-guest="false">
-				<description lang="en_US"></description>
-				<links>
-					<!-- Configure a link to this building block for System Admin > Tools and
-					Utilities. In this case, the link goes to the same configuration page as
-					Settings configured in <http-actions>. -->
-					<link>
-						<type value="system_tool"></type>
-						<name value="VideoScribe Registration Configuration"></name>
-						<!-- The URL is relative to the building block and is where the user will
-						be taken when clicking on this link. -->
-						<url value="jsps/admin/index.jsp" /> <!-- This is the jsp at webapp/admin/indjex.jsp -->
-					</link>
-					<!-- Allow instructors to create links to this building block in their courses. -->
-					<!--
-					<link>
-						<type value="course_tool"></type>
-						<name value="VideoScribe Registration course tool"></name>
-						<url value="course/index.jsp" />
-					</link>
-					-->
-				</links>
-			</application>
-		</application-defs>
-
 		<!-- Portal Module Definitions -->
 		<module-defs>
 			<!-- 
@@ -114,7 +83,7 @@
 			<permission type="java.lang.RuntimePermission" name="modifyThread"/>
 			<!-- Required to send request to videoscribe's dev API server-->
 			<permission type="java.net.SocketPermission" 
-					name="my2.sparkol-dev.co.uk:80" actions="connect,resolve" />
+					name="my2.sparkol-dev.co.uk" actions="connect,resolve" />
 			<!-- Required to send request to videoscribe's prod API server-->
 			<permission type="java.net.SocketPermission" 
 					name="my.sparkol.com" actions="connect,resolve" />
