@@ -64,6 +64,12 @@
 			padding: 0.3em 0.6em;
 		}
 	}
+	textarea
+	{
+		width: $modeBlockWidth * 2;
+		height: 5em;
+		margin-top: 0.5em;
+	}
 
 	/* The status indicators for the form submit */
 	.messages

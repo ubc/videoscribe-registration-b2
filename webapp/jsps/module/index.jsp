@@ -19,9 +19,7 @@ unavailable or not, then by the user's role in the course '-->
 	
 	<div id="VideoScribeRegistrationAppDiv">
 		<div ng-controller="VSModuleController">
-			<p>
-			Please fill in the form below and then click "Register" to create your VideoScribe account. Note that you don't have to put down your real name, but the email must be valid since you will get additional instructions by email.
-			</p>
+			<div ng-bind-html="info.instructions"></div>
 			<form ng-submit="submit()">
 				<div>
 					<label for="ubc-vsr-firstname">First Name</label>
@@ -221,6 +219,14 @@ libLoader([
 			return true; 
 		}, 
 		"url": b2url + "bower_components/angular-resource/angular-resource.js"
+	},
+	{
+		"loaded": function() { 
+			try { angular.module("ngSanitize"); } 
+			catch(e) { return false; } 
+			return true; 
+		}, 
+		"url": b2url + "bower_components/angular-sanitize/angular-sanitize.js"
 	},
 	{
 		"loaded": function() { 

@@ -1,7 +1,7 @@
 var app = angular.module('VideoScribeRegistrationAdminApp', ['admin']);
 
 // Put all building block admin functions into its own module.
-var adminModule = angular.module('admin', ['ngResource']);
+var adminModule = angular.module('admin', ['ngResource', 'ngSanitize']);
 
 adminModule.factory('AdminRsc',
 	function ($resource)

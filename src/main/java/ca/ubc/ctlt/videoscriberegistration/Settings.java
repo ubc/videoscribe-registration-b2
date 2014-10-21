@@ -12,6 +12,7 @@ import com.spvsoftwareproducts.blackboard.utils.B2Context;
 public class Settings
 {
 	public final static String MODE_SETTING = "mode_setting";
+	public final static String INSTRUCTIONS_SETTING = "instructions_setting";
 	public final static String PROD_USERNAME_SETTING = "prod_username_setting";
 	public final static String PROD_PASSWORD_SETTING = "prod_password_setting";
 	public final static String DEV_USERNAME_SETTING = "dev_username_setting";
@@ -28,6 +29,7 @@ public class Settings
 	class Config
 	{
 		public String mode = "";
+		public String instructions = "";
 		public Map<String, String> prod = new HashMap<String, String>();
 		public Map<String, String> dev = new HashMap<String, String>();
 	}
@@ -66,6 +68,17 @@ public class Settings
 		return getDevPassword();
 	}
 	/**
+	 * Instructions for how to use the VideoScribe registration module
+	 * @return
+	 */
+	public String getInstructions()
+	{
+		return settings.getSetting(INSTRUCTIONS_SETTING,
+			"<p>Please fill in the form below and then click 'Register' to create your VideoScribe account. " +
+			"Note that you don't have to put down your real name, but the email must be valid since you will" +
+			" get additional instructions by email.</p>");
+	}
+	/**
 	 * Converts the settings to JSON representation.
 	 * @return
 	 */
@@ -73,6 +86,7 @@ public class Settings
 	{
 		Config config = new Config();
 		config.mode = getMode();
+		config.instructions = getInstructions();
 		config.prod.put("username", getProdUsername());
 		config.prod.put("password", getProdPassword());
 		config.dev.put("username", getDevUsername());
@@ -92,6 +106,7 @@ public class Settings
 			throw new InvalidOption("Operating mode selected is invalid!");
 		}
 		settings.setSetting(MODE_SETTING, config.mode);
+		settings.setSetting(INSTRUCTIONS_SETTING, config.instructions);
 		settings.setSetting(PROD_USERNAME_SETTING, config.prod.get("username"));
 		settings.setSetting(PROD_PASSWORD_SETTING, config.prod.get("password"));
 		settings.setSetting(DEV_USERNAME_SETTING, config.dev.get("username"));

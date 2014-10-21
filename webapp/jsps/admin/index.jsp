@@ -27,6 +27,7 @@ var b2path = "${ctx.request.contextPath}"; // sort of a hacky way to get the b2'
 </script>
 <script src="${ctx.request.contextPath}/bower_components/angular/angular.js"></script>
 <script src="${ctx.request.contextPath}/bower_components/angular-resource/angular-resource.js"></script>
+<script src="${ctx.request.contextPath}/bower_components/angular-sanitize/angular-sanitize.js"></script>
 <script src="${ctx.request.contextPath}/scripts/admin.js"></script>
 
 <%-- AngularJS needs a wrapping ng-app element. We give it a class too to make it easy to isolate this building block's CSS. --%>
@@ -34,9 +35,9 @@ var b2path = "${ctx.request.contextPath}"; // sort of a hacky way to get the b2'
 	<%-- Only a simple single controller app that, given a username, retrieves some
 	basic info about the user. Will initially load the current logged in user's info. --%>
 	<div ng-controller="AdminCtrl">
-		<h1>Select Operation Mode</h1>
 
 		<form ng-submit="submit()" onsubmit="return false;">
+			<h1>Select Operation Mode</h1>
 			<p>
 			For testing purposes, a <i>Development Mode</i> is available.
 			Accounts created in <i>Development Mode</i> will have a
@@ -82,6 +83,13 @@ var b2path = "${ctx.request.contextPath}"; // sort of a hacky way to get the b2'
 					<input type="checkbox" ng-model="showDevPassword" 
 						ng-checked="false">Show
 				</label>
+			</div>
+			<h1>Instruction Text</h1>
+			<div>
+				<p>This is the text shown to the user which explains how to use the VideoScribe Registration module. Basic HTML tags may be used.</p>
+				<textarea ng-model="config.instructions"></textarea>
+				<h3>Preview</h3>
+				<div ng-bind-html="config.instructions"></div>
 			</div>
 			<div class="centerSubmit">
 				<input type="submit" value="Save" />

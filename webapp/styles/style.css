@@ -38,6 +38,10 @@
       margin: 0 auto;
       display: block;
       padding: 0.3em 0.6em; }
+  .VideoScribeRegistrationAdmin textarea {
+    width: 40em;
+    height: 5em;
+    margin-top: 0.5em; }
   .VideoScribeRegistrationAdmin .messages {
     margin-top: 1em;
     width: 40em;

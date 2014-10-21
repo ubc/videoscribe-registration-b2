@@ -1,4 +1,4 @@
-var vsregiApp = angular.module('VideoScribeRegistrationApp', ['ngResource']);
+var vsregiApp = angular.module('VideoScribeRegistrationApp', ['ngResource', 'ngSanitize']);
 
 vsregiApp.factory(
 	'ModuleResource',

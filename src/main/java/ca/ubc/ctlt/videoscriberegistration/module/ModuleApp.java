@@ -43,6 +43,7 @@ public class ModuleApp extends Application
 		// This is the same Context accessible with the bbNG page tags.
 		Context ctx = ContextManagerFactory.getInstance().getContext();
 		User user = ctx.getUser(); // this is the logged in user who initiated this request
+		Settings settings = new Settings();
 		HashMap<String,String> info = new HashMap<String,String>();
 		info.put("instructions", settings.getInstructions());
 		info.put("firstname", user.getGivenName());
