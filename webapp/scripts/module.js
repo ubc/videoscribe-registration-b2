@@ -13,7 +13,19 @@ vsregiApp.controller(
 	'VSModuleController', 
 	function($scope, $log, $timeout, ModuleResource)
 	{
-		$scope.submitStatus = "";
+		$scope.submitStatus = "initializing";
+		ModuleResource.get().$promise.then(
+			function(result)
+			{
+				$scope.info = result;
+				$scope.submitStatus = "";
+			},
+			function(result)
+			{
+				$scope.submitStatus = "error";
+				$scope.errorMsg = "Error initializing.";
+			}
+		);
 		$scope.submit = function() 
 		{
 			$scope.submitStatus = "processing";
@@ -49,18 +61,19 @@ vsregiApp.controller(
 							var problematicField = 
 								result.data.desc.error_validation[0].fieldname;
 							$log.debug(problematicField);
-							if (problematicField == "password")
+							if (problematicField == "surname")
 							{
-								$scope.errorMsg="Error: Password is too short.";
+								$scope.errorMsg = "Error, last name is too short.";
 							}
-							else if (problematicField == "surname")
+							else if (problematicField == "email")
 							{
-								$scope.errorMsg = "Error: Missing last name.";
+								$scope.errorMsg = "Error, invalid email format."
+
 							}
 							else
 							{
-								$scope.errorMsg = "Error: Missing " + 
-									problematicField;
+								$scope.errorMsg = "Error, " + problematicField +
+									" is too short.";
 							}
 						}
 					}

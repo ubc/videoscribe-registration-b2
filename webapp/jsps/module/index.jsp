@@ -24,15 +24,15 @@ unavailable or not, then by the user's role in the course '-->
 			</p>
 			<form ng-submit="submit()">
 				<div>
-					<label for="ubc-vsr-firstname">Firstname </label>
+					<label for="ubc-vsr-firstname">First Name</label>
 					<input id="ubc-vsr-firstname" type="text" ng-model="info.firstname" required />
 				</div>
 				<div>
-					<label for="ubc-vsr-lastname">Lastname </label>
+					<label for="ubc-vsr-lastname">Last Name</label>
 					<input id="ubc-vsr-lastname" type="text" ng-model="info.lastname" required />
 				</div>
 				<div>
-					<label for="ubc-vsr-password">Password </label>
+					<label for="ubc-vsr-password">Password</label>
 					<input id="ubc-vsr-password" ng-hide="showPassword" type="password" ng-model="info.password" required />
 					<input id="ubc-vsr-password" ng-show="showPassword" type="text" ng-model="info.password" required />
 					<label class="passwordVisibility">
@@ -40,13 +40,14 @@ unavailable or not, then by the user's role in the course '-->
 					</label>
 				</div>
 				<div>
-					<label for="ubc-vsr-email">Email </label>
+					<label for="ubc-vsr-email">Email</label>
 					<input id="ubc-vsr-email" type="text" ng-model="info.email" required />
 				</div>
 				<div class="submit">
 					<input id="ubc-vsr-submit" type="submit" value="Register" />
 				</div>
 				<div class="messages">
+					<span class="processing" ng-show='submitStatus == "initializing"'>Initializing...</span>
 					<span class="processing" ng-show='submitStatus == "processing"'>Registering...</span>
 					<span class="success" ng-show="submitStatus == 'success'">Success! Please check your email.</span>
 					<span class="error" ng-show="submitStatus == 'error'">{{errorMsg}}</span>

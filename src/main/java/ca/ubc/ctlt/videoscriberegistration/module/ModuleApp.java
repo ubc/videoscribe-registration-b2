@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -21,6 +22,7 @@ import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import blackboard.data.user.User;
 import blackboard.platform.context.Context;
 import blackboard.platform.context.ContextManagerFactory;
 import ca.ubc.ctlt.videoscriberegistration.Settings;
@@ -33,16 +35,28 @@ public class ModuleApp extends Application
 {
 	private final static Logger logger = LoggerFactory.getLogger(ModuleApp.class);
 
+	@GET
+	public String getDefaultUserInfo()
+	{
+		ensureAccess();
+		// The Blackboard Context object is how you access information about the request that we're serving.
+		// This is the same Context accessible with the bbNG page tags.
+		Context ctx = ContextManagerFactory.getInstance().getContext();
+		User user = ctx.getUser(); // this is the logged in user who initiated this request
+		HashMap<String,String> info = new HashMap<String,String>();
+		info.put("instructions", settings.getInstructions());
+		info.put("firstname", user.getGivenName());
+		info.put("lastname", user.getFamilyName());
+		info.put("email", user.getEmailAddress());
+		Gson gson = new Gson();
+		return gson.toJson(info);
+	}
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response registerVideoScribe(String message)
 	{
-		// user must be logged in
-		Context ctx = ContextManagerFactory.getInstance().getContext();
-		if (!ctx.getSession().isAuthenticated())
-		{
-			throw new ForbiddenException();
-		}
+		ensureAccess();
 		Settings settings = new Settings();
 		Gson gson = new Gson();
 		// parse params
@@ -84,6 +98,18 @@ public class ModuleApp extends Application
 			logger.error("Videoscribe API returned " + resp.getStatus() + " with message:" + 
 				resp.readEntity(String.class));
 			throw new InternalServerErrorException();
+		}
+	}
+	
+	/**
+	 * Ensure that users must be logged in.
+	 */
+	private void ensureAccess()
+	{
+		Context ctx = ContextManagerFactory.getInstance().getContext();
+		if (!ctx.getSession().isAuthenticated())
+		{
+			throw new ForbiddenException();
 		}
 	}
 
