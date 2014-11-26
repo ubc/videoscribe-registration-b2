@@ -47,7 +47,7 @@ public class Settings
 	public String getApiBaseUrl()
 	{
 		if (isProdMode()) return "https://my.sparkol.com";
-		return "http://my2.sparkol-dev.co.uk";
+		return "http://my.sparkol-dev.co.uk/";
 	}
 	/**
 	 * Get the username appropriate for the mode selected.

@@ -6,7 +6,7 @@
 		<encoder>
 			<!-- default output format, not using cause blackboard stdout gives info already -->
 			<!-- <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern> -->
-			<pattern>B2 Template %-5level - %msg%n</pattern>
+			<pattern>VideoScribe Registration - %-5level - %msg%n</pattern>
 		</encoder>
 	</appender>
 
