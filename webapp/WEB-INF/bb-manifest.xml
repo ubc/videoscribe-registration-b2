@@ -77,6 +77,8 @@
 			<permission type="attribute" name="user.authinfo" actions="get" />
 			<permission type="attribute" name="user.personalinfo" 
 					actions="get,set" />
+			<!-- This isn't required on my dev machine but is needed in verf, not sure why -->
+			<permission type="java.lang.PropertyPermission" name="*" actions="read,write" />
 			<!-- Required by Jersey -->
 			<permission type="java.lang.reflect.ReflectPermission"
 					name="suppressAccessChecks" />
