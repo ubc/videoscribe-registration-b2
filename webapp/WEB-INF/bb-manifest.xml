@@ -77,12 +77,13 @@
 			<permission type="attribute" name="user.authinfo" actions="get" />
 			<permission type="attribute" name="user.personalinfo" 
 					actions="get,set" />
-			<!-- This isn't required on my dev machine but is needed in verf, not sure why -->
-			<permission type="java.lang.PropertyPermission" name="*" actions="read,write" />
 			<!-- Required by Jersey -->
 			<permission type="java.lang.reflect.ReflectPermission"
 					name="suppressAccessChecks" />
 			<permission type="java.lang.RuntimePermission" name="modifyThread"/>
+			<!-- Required by Jersey's client api when accessing https resources -->
+			<permission type="java.util.PropertyPermission" name="*" actions="read,write" />
+			<permission type="java.lang.RuntimePermission" name="setFactory"/>
 			<!-- Required to send request to videoscribe's dev API server-->
 			<permission type="java.net.SocketPermission" 
 					name="my.sparkol-dev.co.uk" actions="connect,resolve" />

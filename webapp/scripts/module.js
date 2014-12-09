@@ -76,6 +76,10 @@ vsregiApp.controller(
 									" is too short.";
 							}
 						}
+						else
+						{
+							$scope.errorMsg = "Unexpected 400 error: " + errorCode;
+						}
 					}
 				}
 			);

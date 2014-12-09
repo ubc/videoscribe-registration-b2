@@ -3,6 +3,7 @@ package ca.ubc.ctlt.videoscriberegistration.module;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.net.ssl.SSLContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.GET;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.client.authentication.HttpAuthenticationFeature;
+import org.glassfish.jersey.SslConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
