@@ -14,8 +14,11 @@ repositories {
 	}
 }
 
+group "ca.ubc"
+version "1.0.2"
+
 ext {
-	bblVer = "9.1.120113.0" // we're on sp13, but BB maven stuck on sp12
+	bblVer = "9.1.201410.160373" // we're on sp13, but BB maven stuck on sp12
 	bblServer = "bblvm" // CHANGEME: the BBL server to deploy to
 }
 
@@ -49,7 +52,7 @@ dependencies {
 
 // Gradle wrapper support
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.1'
+    gradleVersion = '2.7'
 }
 
 // Compile the Sass css file into regular css 

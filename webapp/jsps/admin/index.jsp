@@ -14,7 +14,7 @@ The ctxId params provides access  to a Blackboard Context object where
 information about the current request being served can be retrieved. In this
 example, we gave it a short 'ctx' name, but the default name is 'bbContext'.
 --%>
-<bbNG:genericPage ctxId="ctx" >
+<bbNG:genericPage ctxId="ctx" entitlement="system.admin.VIEW">
 
 <bbNG:pageHeader instructions="Configure API usernames and passwords for VideoScribe registration.">
 	<bbNG:pageTitleBar >VideoScribe Registration Building Block Configuration</bbNG:pageTitleBar>
