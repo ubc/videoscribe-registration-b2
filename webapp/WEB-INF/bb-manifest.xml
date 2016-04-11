@@ -9,7 +9,7 @@
 		<handle value="videoscribe-registration" />
 		<description
 			value="Initiates VideoScribe registration by calling their API." />
-		<version value="1.0.2" />
+		<version value="1.0.3" />
 		<requires>
 			<!-- Same Format as BBL versions: major.minor.patch.build, only first
 				two numbers required. -->
