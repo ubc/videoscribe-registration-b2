@@ -17,6 +17,9 @@ repositories {
 group "ca.ubc"
 version "1.0.2"
 
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'
+
 ext {
 	bblVer = "9.1.201410.160373" // we're on sp13, but BB maven stuck on sp12
 	bblServer = "bblvm" // CHANGEME: the BBL server to deploy to
