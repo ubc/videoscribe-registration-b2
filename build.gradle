@@ -15,7 +15,7 @@ repositories {
 }
 
 group "ca.ubc"
-version "1.0.3"
+version "1.0.4"
 
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
