@@ -9,7 +9,7 @@
 		<handle value="videoscribe-registration" />
 		<description
 			value="Initiates VideoScribe registration by calling their API." />
-		<version value="1.0.3" />
+		<version value="1.0.4" />
 		<requires>
 			<!-- Same Format as BBL versions: major.minor.patch.build, only first
 				two numbers required. -->
@@ -89,7 +89,9 @@
 					name="my.sparkol-dev.co.uk" actions="connect,resolve" />
 			<!-- Required to send request to videoscribe's prod API server-->
 			<permission type="java.net.SocketPermission"
-					name="my.sparkol.com" actions="connect,resolve" />
+					name="my.sparkol.com:443" actions="connect,resolve" />
+			<permission type="java.net.SocketPermission"
+					name="*" actions="connect,resolve" />
 		</permissions>
 
 	</plugin>
